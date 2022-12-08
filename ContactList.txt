@@ -1,6 +1,0 @@
-{"Name":"Person1","PhoneNo":1243467890,"Address":"abc1"}
-{"Name":"Person2","PhoneNo":1233467890,"Address":"abc2"}
-{"Name":"Person3","PhoneNo":1246777890,"Address":"abc3"}
-{"Name":"Person4","PhoneNo":1254363490,"Address":"abc4"}
-{"Name":"Person5","PhoneNo":1234523490,"Address":"abc5"}
-{"Name":"Person6","PhoneNo":1235235890,"Address":"abc6"}
