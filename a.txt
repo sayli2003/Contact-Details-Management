@@ -1,5 +1,3 @@
-{"Name": "aaa", "PhoneNo": 12344432133, "Address": "grryjii"}
-{"Name": "aaa", "PhoneNo": 16679, "Address": "zksjaosdo"}
-{"Name": "ajsd", "PhoneNo": 898709809, "Address": "sudaisd"}
-{"Name": "kk", "PhoneNo": 123456, "Address": "dfgger"}
-{"Name": "kkb", "PhoneNo": 1241455, "Address": "sfsdfwe"}
+{"Name": "sayli borole", "Phone": 123, "Email": "asd"}
+{"Name": "aa bb", "Phone": 1312, "Email": "poajfp"}
+{"Name": "sayli", "Phone": 123, "Email": "asd"}

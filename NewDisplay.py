@@ -1,6 +1,5 @@
 import json
 
-
 class Contact:
     contactList=[]
     def __init__(self,Data):
@@ -10,10 +9,11 @@ class Contact:
             self.contactList.append(contact)
         self.Data=Data
     def Details(self,s):
+        newList=[]
         for i in self.contactList:
-            if(i["Name"]==s):
-                return i
-        return
+            if(s in i["Name"]):
+                newList.append(i)
+        return newList
     def refactor(self):
         file=open(self.Data,"w")
         file.write(json.dumps(self.contactList[0])+"\n")

@@ -3,7 +3,7 @@ import time
 import json
 from tkinter import *
 import NewDisplay as nd
-
+from cryptography.fernet import Fernet
 def delete3():
     screen4.destroy()
 def delete5(screen):
@@ -18,7 +18,7 @@ def frontpage(username):
     username = username + ".txt"
     after_login_screen = Toplevel(screen)
     after_login_screen.title("Logged in!")
-    after_login_screen.geometry("150x100")
+    after_login_screen.geometry("550x450")
     Label(after_login_screen, text="Login Success").pack()
     global ob
     ob=nd.Contact(username)
@@ -29,56 +29,63 @@ def frontpage(username):
     Search_button.config(command=lambda: FoundItem(Search_item.get(), after_login_screen))
     Search_button.pack()
     Button(after_login_screen, text="new Contact", width=10, height=1, command=lambda: add_contact(username)).pack()
-    # Button(after_login_screen, text="update Contact", width=10, height=1, command=lambda: update_contact(username)).pack()
-    # Button(after_login_screen, text="delete Contact", width=10, height=1, command=lambda: delete_contact(username)).pack()
-    # Button(after_login_screen, text="search Contact", width=10, height=1, command=lambda: delete_contact(username)).pack()
-
 
 def FoundItem(s,screen):
     dets=ob.Details(s)
     DisplayDetails=Toplevel(screen)
+    DisplayDetails.geometry("550x450")
     if(dets!=None):
-        Label(DisplayDetails, text=dets["Name"]).pack()
-        # Button(DisplayDetails, text="Call").pack()
-        Label(DisplayDetails, text=dets["PhoneNo"]).pack()
-        # Button(DisplayDetails, text="Email").pack()
-        Label(DisplayDetails, text=dets["Address"]).pack()
-        Button(DisplayDetails, text="Delete",command=lambda :Delete_contact(dets,DisplayDetails)).pack()
-        Button(DisplayDetails, text="Update",command=lambda :Update_contact(dets,DisplayDetails)).pack()
+        for i in dets:
+            Label(DisplayDetails, text=f'First name: {i["Name"]}',padx=5,pady=5).pack()
+            Label(DisplayDetails, text=f'Phone no. : {i["Phone"]}',padx=5,pady=5).pack()
+            Label(DisplayDetails, text=f'Email : {i["Email"]}',padx=5,pady=5).pack()
+            Button(DisplayDetails, text="Delete",command=lambda :Delete_contact(dets,DisplayDetails),padx=5,pady=5).pack()
+            Button(DisplayDetails, text="Update",command=lambda :Update_contact(dets,DisplayDetails),padx=5,pady=5).pack()
+            Label(DisplayDetails, text='', padx=5, pady=5).pack()
     else:
         Label(DisplayDetails, text="NotFound").pack()
     Button(DisplayDetails, text="Back", width=10, height=1, command=lambda: delete5(DisplayDetails)).pack()
 def add_contact(user):
-    print("Entered add contact")
     global addScreen
     addScreen = Toplevel(screen)
     addScreen.title("Add New Contact")
-    Label(addScreen, text="Enter contact Details").pack()
-    Label(addScreen, text="Name").pack()
-    Label(addScreen).pack()
-    Name=Entry(addScreen)
-    Name.pack()
-    Name.focus_set()
-    Label(addScreen).pack()
-    Phone = Entry(addScreen)
-    Phone.pack()
-    Phone.focus_set()
-    Label(addScreen).pack()
-    Address = Entry(addScreen)
-    Address.pack()
-    Address.focus_set()
-    Label(addScreen).pack()
-    enter = {"Name": Name.get(), "PhoneNo": int(Phone.get()), "Address": Address.get()}
-    Add=Button(addScreen, text="Add")
-    Add.config( command=lambda :add(enter,user,addScreen))
-    Add.pack()
+    addScreen.geometry("550x450")
+    f = open(user, "a")
+    # Fields
+    Label(addScreen, text="First name: ").grid(row=0, column=0, padx=10, pady=10)
+    Label(addScreen, text="Last name : ").grid(row=1, column=0, padx=10, pady=10)
+    Label(addScreen, text="Phone no. : ").grid(row=2, column=0, padx=10, pady=10)
+    Label(addScreen, text="Email : ").grid(row=3, column=0, padx=10, pady=10)
+    # vars
+    global firstname
+    global lastname
+    global phno
+    global email
+    firstname = StringVar()
+    lastname = StringVar()
+    email = StringVar()
+    phno = IntVar()
+    phno.set('')
+
+    # Entries
+    Entry(addScreen, textvariable=firstname).grid(row=0, column=1, padx=10)
+    Entry(addScreen, textvariable=lastname).grid(row=1, column=1, padx=10)
+    Entry(addScreen, textvariable=phno).grid(row=2, column=1, padx=10)
+    Entry(addScreen, textvariable=email).grid(row=3, column=1, padx=10)
+
+    # Button
+    Button(addScreen, text="Save", command=lambda: add(firstname.get(),lastname.get(),phno.get(),email.get(),addScreen)).grid(row=4, column=1)
+    f.close()
 
 
-
-def add(enter,addScreen):
+def add(firstname,lastname,PhoneNo,email,addScreen):
+    enter={}
+    enter["Name"]=firstname+" "+lastname
+    enter["Phone"]=PhoneNo
+    enter["Email"]=email
     ob.append(enter)
     addScreen2 = Toplevel(screen)
-    Label(addScreen2, text="Contact Added Successfully").pack()
+    Label(addScreen2, text="Contact Added Successfully").grid(row=0, column=0, padx=10,pady=10)
     time.sleep(1)
     addScreen2.destroy()
     delete5(addScreen)
@@ -87,7 +94,7 @@ def add(enter,addScreen):
 def Delete_contact(dets,screen):
     ob.delete(dets)
     DeleteScreen = Toplevel(screen)
-    Label(DeleteScreen, text="Contact deleted Successfully").pack()
+    Label(DeleteScreen, text="Contact deleted Successfully").grid(row=0, column=0, padx=10,pady=10)
     time.sleep(1)
     DeleteScreen.destroy()
     delete5(screen)
@@ -95,29 +102,45 @@ def Delete_contact(dets,screen):
 def Update_contact(dets,screen):
     updateScreen = Toplevel(screen)
     updateScreen.title("Update Contact")
-    Label(updateScreen, text="Enter contact Details").pack()
-    Label(updateScreen, text="Name").pack()
-    Label(updateScreen).pack()
-    Name=Entry(updateScreen)
-    Name.pack()
-    Name.focus_set()
-    Label(updateScreen).pack()
-    Phone = Entry(updateScreen)
-    Phone.pack()
-    Phone.focus_set()
-    Label(updateScreen).pack()
-    Address = Entry(updateScreen)
-    Address.pack()
-    Address.focus_set()
-    Label(updateScreen).pack()
-    enter = {"Name": Name.get(), "PhoneNo": int(Phone.get()), "Address": Address.get()}
-    Add=Button(updateScreen, text="update")
-    Add.config( command=lambda :update(enter,dets,updateScreen))
-    Add.pack()
-def update(enter,dets,screen):
+    updateScreen.geometry("550x450")
+    Label(updateScreen, text="Enter contact Details").grid(row=0, column=0, padx=10,pady=10)
+    Label(updateScreen, text="First name: ").grid(row=1, column=0, padx=10, pady=10)
+    Label(updateScreen, text="Last name : ").grid(row=2, column=0, padx=10, pady=10)
+    Label(updateScreen, text="Phone no. : ").grid(row=3, column=0, padx=10, pady=10)
+    Label(updateScreen, text="Email : ").grid(row=4, column=0, padx=10, pady=10)
+    # vars
+    global firstname
+    global lastname
+    global phno
+    global email
+    firstname = StringVar()
+    lastname = StringVar()
+    email = StringVar()
+    phno = IntVar()
+    phno.set('')
+
+    # Entries
+    Entry(updateScreen, textvariable=firstname).grid(row=1, column=1, padx=10)
+    Entry(updateScreen, textvariable=lastname).grid(row=2, column=1, padx=10)
+    Entry(updateScreen, textvariable=phno).grid(row=3, column=1, padx=10)
+    Entry(updateScreen, textvariable=email).grid(row=4, column=1, padx=10)
+
+    # Button
+    Button(updateScreen, text="Save",
+           command=lambda: update(firstname.get(),lastname.get(), phno.get(), email.get(),dets,updateScreen)).grid(
+        row=5, column=1)
+
+
+def update(firstname,lastname,PhoneNo,email,dets,screen):
+    enter={}
+
+    print("here")
+    enter["Name"]=firstname+" "+lastname
+    enter["Phone"]=PhoneNo
+    enter["Email"]=email
     ob.update(dets,enter)
     UpadateScreen = Toplevel(screen)
-    Label(UpadateScreen, text="Contact deleted Successfully").pack()
+    Label(UpadateScreen, text="Contact Upadated Successfully").grid(row=0, column=0, padx=10, pady=10)
     time.sleep(1)
     UpadateScreen.destroy()
     delete5(screen)
@@ -127,8 +150,8 @@ def password_not_recognised():
     screen4 = Toplevel(screen)
     screen4.title("Success")
     screen4.geometry("150x100")
-    Label(screen4, text="Password Error").pack()
-    Button(screen4, text="OK", command=delete3).pack()
+    Label(screen4, text="Password Error").grid(row=0, column=0, padx=10,pady=10)
+    Button(screen4, text="OK", command=delete3).grid(row=0, column=0, padx=10,pady=10)
 
 
 def user_not_found():
@@ -136,8 +159,8 @@ def user_not_found():
     screen5 = Toplevel(screen)
     screen5.title("Success")
     screen5.geometry("150x100")
-    Label(screen5, text="User Not Found").pack()
-    Button(screen5, text="OK", command=delete4).pack()
+    Label(screen5, text="User Not Found").grid(row=0, column=0, padx=10,pady=10)
+    Button(screen5, text="OK", command=delete4).grid(row=0, column=0, padx=10,pady=10)
 
 
 def register_user():
@@ -145,18 +168,25 @@ def register_user():
 
     username_info = username.get()
     password_info = password.get()
-
+    csv_reader = csv.reader(open('login_info.csv', 'r'))
+    for i in csv_reader:
+        if username_info ==i[0]:
+            dismsg=Toplevel(screen1)
+            Label(dismsg, text="Registration Unsuccesful: UserName is taken").pack()
+            Button(dismsg, text="OK", command=lambda :delete5(dismsg)).pack()
+            return
+    global keyobj
+    keyobj=Fernet(Fernet.generate_key())
+    password_info=Fernet
     file = open(username_info, "w")
-    # file.write(username_info + "\n")
-    # file.write(password_info)
     file.close()
     with open('login_info.csv', 'a') as file:
-        file.write(f"{username_info},{password_info}")
+        file.write(f"{username_info},{password_info}\n")
 
     username_entry.delete(0, END)
     password_entry.delete(0, END)
 
-    Label(screen1, text="Registration Success", fg="green", font=("calibri", 11)).pack()
+    Label(screen1, text="Registration Success", fg="green", font=("calibri", 11)).grid(row=0, column=0, padx=10,pady=10)
     time.sleep(0.2)
     screen1.destroy()
 
@@ -188,7 +218,7 @@ def register():
     global screen1
     screen1 = Toplevel(screen)
     screen1.title("Register")
-    screen1.geometry("300x250")
+    screen1.geometry("550x450")
 
     global username
     global password
@@ -214,7 +244,7 @@ def login():
     global screen2
     screen2 = Toplevel(screen)
     screen2.title("Login")
-    screen2.geometry("300x250")
+    screen2.geometry("550x450")
     Label(screen2, text="Please enter details below to login").pack()
     Label(screen2, text="").pack()
 
@@ -239,15 +269,16 @@ def login():
 
 def main_screen():
     global screen
+    global ob
+    ob = nd.Contact(username)
     screen = Tk()
-    screen.geometry("300x250")
+    screen.geometry("550x450")
     screen.title("Contacts")
     Label(text="Contacts", bg="grey", width="300", height="2", font=("Calibri", 13)).pack()
     Label(text="").pack()
     Button(text="Login", height="2", width="30", command=login).pack()
     Label(text="").pack()
     Button(text="Register", height="2", width="30", command=register).pack()
-
     screen.mainloop()
 
 
