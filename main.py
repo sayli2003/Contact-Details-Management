@@ -3,7 +3,7 @@ import time
 import json
 from tkinter import *
 import NewDisplay as nd
-# from cryptography.fernet import Fernet
+from cryptography.fernet import Fernet
 def delete3():
     screen4.destroy()
 def delete5(screen):
@@ -167,6 +167,7 @@ def register_user():
     print("working")
 
     username_info = username.get()
+    print(username_info)
     password_info = password.get()
     csv_reader = csv.reader(open('login_info.csv', 'r'))
     for i in csv_reader:
@@ -175,23 +176,19 @@ def register_user():
             Label(dismsg, text="Registration Unsuccesful: UserName is taken").pack()
             Button(dismsg, text="OK", command=lambda :delete5(dismsg)).pack()
             return
-    # if password_info2!=password_info:
-    #     dismsg = Toplevel(screen1)
-    #     Label(dismsg, text="Registration Unsuccesful: Comfirm Paswaord is Incorrect").pack()
-    #     Button(dismsg, text="OK", command=lambda: delete5(dismsg)).pack()
-    #     return
-    # global keyobj
-    # keyobj=Fernet(Fernet.generate_key())
-    # password_info=Fernet
-    file = open(username_info, "w")
+    Pass = open("key.txt", "r")
+    keyobj=Fernet(Pass.readline().encode())
+    Pass.close()
+    enpass=keyobj.encrypt(password_info.encode()).decode()
+    file = open(username_info+".txt", "w")
     file.close()
     with open('login_info.csv', 'a') as file:
-        file.write(f"{username_info},{password_info}\n")
+        file.write(f"{username_info},{enpass}\n")
 
     username_entry.delete(0, END)
     password_entry.delete(0, END)
 
-    Label(screen1, text="Registration Success", fg="green", font=("calibri", 11)).grid(row=0, column=0, padx=10,pady=10)
+    Label(screen1, text="Registration Success", fg="green", font=("calibri", 11)).pack()
     time.sleep(0.2)
     screen1.destroy()
 
@@ -201,7 +198,9 @@ def login_verify():
     password1 = password_verify.get()
     username_entry1.delete(0, END)
     password_entry1.delete(0, END)
-
+    Pass = open("key.txt", "r")
+    keyobj = Fernet(Pass.readline().encode())
+    Pass.close()
     with open('login_info.csv', 'r') as csv_file:
         csv_reader = csv.reader(csv_file)
         flag = 0
@@ -209,7 +208,8 @@ def login_verify():
             if(line!=[]):
                 if line[0] == username1:
                     flag = 1
-                    if line[1] == password1:
+                    passcheck = keyobj.decrypt(line[1].encode()).decode()
+                    if passcheck == password1:
                         frontpage(username1)
                         time.sleep(0.1)
                         screen2.destroy()
