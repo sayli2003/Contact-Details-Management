@@ -3,7 +3,7 @@ import time
 import json
 from tkinter import *
 import NewDisplay as nd
-from cryptography.fernet import Fernet
+# from cryptography.fernet import Fernet
 def delete3():
     screen4.destroy()
 def delete5(screen):
@@ -175,9 +175,14 @@ def register_user():
             Label(dismsg, text="Registration Unsuccesful: UserName is taken").pack()
             Button(dismsg, text="OK", command=lambda :delete5(dismsg)).pack()
             return
-    global keyobj
-    keyobj=Fernet(Fernet.generate_key())
-    password_info=Fernet
+    # if password_info2!=password_info:
+    #     dismsg = Toplevel(screen1)
+    #     Label(dismsg, text="Registration Unsuccesful: Comfirm Paswaord is Incorrect").pack()
+    #     Button(dismsg, text="OK", command=lambda: delete5(dismsg)).pack()
+    #     return
+    # global keyobj
+    # keyobj=Fernet(Fernet.generate_key())
+    # password_info=Fernet
     file = open(username_info, "w")
     file.close()
     with open('login_info.csv', 'a') as file:
@@ -269,8 +274,6 @@ def login():
 
 def main_screen():
     global screen
-    global ob
-    ob = nd.Contact(username)
     screen = Tk()
     screen.geometry("550x450")
     screen.title("Contacts")
