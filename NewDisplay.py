@@ -16,11 +16,15 @@ class Contact:
         return newList
     def refactor(self):
         file=open(self.Data,"w")
-        file.write(json.dumps(self.contactList[0])+"\n")
+        if(self.contactList!=[]):
+            file.write(json.dumps(self.contactList[0])+"\n")
+            with open(self.Data,"a") as file:
+                for i in self.contactList[1:]:
+                    file.write(json.dumps(i)+"\n")
+        else:
+            file.write()
         file.close()
-        with open(self.Data,"a") as file:
-            for i in self.contactList[1:]:
-                file.write(json.dumps(i)+"\n")
+
     def delete(self,dets):
         self.contactList.remove(dets)
         self.refactor()

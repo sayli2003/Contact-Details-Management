@@ -1,6 +1,6 @@
 import csv
 import time
-import json
+import os
 from tkinter import *
 import NewDisplay as nd
 from cryptography.fernet import Fernet
@@ -19,32 +19,48 @@ def frontpage(username):
     after_login_screen = Toplevel(screen)
     after_login_screen.title("Logged in!")
     after_login_screen.geometry("550x450")
-    Label(after_login_screen, text="Login Success").pack()
+    Label(after_login_screen, text="Login Success").grid(row=0, column=3, padx=10, pady=10)
     global ob
     ob=nd.Contact(username)
     Search_item = Entry(after_login_screen)
-    Search_item.pack()
+    Search_item.grid(row=1, column=3, padx=10, pady=10)
     Search_item.focus_set()
     Search_button = Button(after_login_screen, text="Search")
     Search_button.config(command=lambda: FoundItem(Search_item.get(), after_login_screen))
-    Search_button.pack()
-    Button(after_login_screen, text="new Contact", width=10, height=1, command=lambda: add_contact(username)).pack()
+    Search_button.grid(row=1, column=4, padx=10, pady=10)
+    Button(after_login_screen, text="new Contact", width=10, height=1, command=lambda: add_contact(username)).grid(row=3, column=4, padx=10, pady=10)
+    # dets = ob.Details('');
+    # rw=5
+    # if (dets != None):
+    #     Label(after_login_screen, text='Name').grid(row=rw, column=0, padx=10, pady=10)
+    #     Label(after_login_screen, text='Phone No.').grid(row=rw, column=2, padx=10, pady=10)
+    #     Label(after_login_screen, text='Email').grid(row=rw, column=4, padx=10, pady=10)
+    #     for i in dets:
+    #         rw = rw + 1
+    #         Label(after_login_screen, text=f'{i["Name"]}').grid(row=rw, column=0, padx=10, pady=10)
+    #         Label(after_login_screen, text=f'{i["Phone"]}').grid(row=rw, column=2, padx=10, pady=10)
+    #         Label(after_login_screen, text=f'{i["Email"]}').grid(row=rw, column=4, padx=10, pady=10)
 
 def FoundItem(s,screen):
     dets=ob.Details(s)
     DisplayDetails=Toplevel(screen)
     DisplayDetails.geometry("550x450")
+    rw=0
+
     if(dets!=None):
+        Label(DisplayDetails, text='Name').grid(row=rw, column=0, padx=10, pady=10)
+        Label(DisplayDetails, text='Phone No.').grid(row=rw, column=2, padx=10, pady=10)
+        Label(DisplayDetails, text='Email').grid(row=rw, column=4, padx=10, pady=10)
         for i in dets:
-            Label(DisplayDetails, text=f'First name: {i["Name"]}',padx=5,pady=5).pack()
-            Label(DisplayDetails, text=f'Phone no. : {i["Phone"]}',padx=5,pady=5).pack()
-            Label(DisplayDetails, text=f'Email : {i["Email"]}',padx=5,pady=5).pack()
-            Button(DisplayDetails, text="Delete",command=lambda :Delete_contact(dets,DisplayDetails),padx=5,pady=5).pack()
-            Button(DisplayDetails, text="Update",command=lambda :Update_contact(dets,DisplayDetails),padx=5,pady=5).pack()
-            Label(DisplayDetails, text='', padx=5, pady=5).pack()
+            rw=rw+1
+            Label(DisplayDetails, text=f'{i["Name"]}').grid(row=rw, column=0, padx=10, pady=10)
+            Label(DisplayDetails, text=f'{i["Phone"]}').grid(row=rw, column=2, padx=10, pady=10)
+            Label(DisplayDetails, text=f'{i["Email"]}').grid(row=rw, column=4, padx=10, pady=10)
+            Button(DisplayDetails, text="Delete",command=lambda:Delete_contact(i,DisplayDetails)).grid(row=rw, column=5, padx=10, pady=10)
+            Button(DisplayDetails, text="Update",command=lambda:Update_contact(i,DisplayDetails)).grid(row=rw, column=6, padx=10, pady=10)
     else:
-        Label(DisplayDetails, text="NotFound").pack()
-    Button(DisplayDetails, text="Back", width=10, height=1, command=lambda: delete5(DisplayDetails)).pack()
+        Label(DisplayDetails, text="NotFound").grid(row=0, column=0, padx=10, pady=10)
+    Button(DisplayDetails, text="Back", width=10, height=1, command=lambda: delete5(DisplayDetails)).grid(row=(rw+1), column=6, padx=10, pady=10)
 def add_contact(user):
     global addScreen
     addScreen = Toplevel(screen)
@@ -117,7 +133,7 @@ def Update_contact(dets,screen):
     lastname = StringVar()
     email = StringVar()
     phno = IntVar()
-    phno.set('')
+    phno.set("")
 
     # Entries
     Entry(updateScreen, textvariable=firstname).grid(row=1, column=1, padx=10)
@@ -127,13 +143,12 @@ def Update_contact(dets,screen):
 
     # Button
     Button(updateScreen, text="Save",
-           command=lambda: update(firstname.get(),lastname.get(), phno.get(), email.get(),dets,updateScreen)).grid(
+           command=lambda: update(firstname.get(),lastname.get(), phno.get(), email.get(),dets,updateScreen,screen)).grid(
         row=5, column=1)
 
 
-def update(firstname,lastname,PhoneNo,email,dets,screen):
+def update(firstname,lastname,PhoneNo,email,dets,screen,screen2):
     enter={}
-
     print("here")
     enter["Name"]=firstname+" "+lastname
     enter["Phone"]=PhoneNo
@@ -144,6 +159,7 @@ def update(firstname,lastname,PhoneNo,email,dets,screen):
     time.sleep(1)
     UpadateScreen.destroy()
     delete5(screen)
+    delete5(screen2)
 
 def password_not_recognised():
     global screen4
@@ -151,7 +167,7 @@ def password_not_recognised():
     screen4.title("Success")
     screen4.geometry("150x100")
     Label(screen4, text="Password Error").grid(row=0, column=0, padx=10,pady=10)
-    Button(screen4, text="OK", command=delete3).grid(row=0, column=0, padx=10,pady=10)
+    Button(screen4, text="OK", command=delete3).grid(row=1, column=0, padx=10,pady=10)
 
 
 def user_not_found():
@@ -160,15 +176,17 @@ def user_not_found():
     screen5.title("Success")
     screen5.geometry("150x100")
     Label(screen5, text="User Not Found").grid(row=0, column=0, padx=10,pady=10)
-    Button(screen5, text="OK", command=delete4).grid(row=0, column=0, padx=10,pady=10)
+    Button(screen5, text="OK", command=delete4).grid(row=1, column=0, padx=10,pady=10)
 
 
 def register_user():
     print("working")
 
     username_info = username.get()
-    print(username_info)
     password_info = password.get()
+    if(os.path.exists('login_info.csv')==False):
+        csv_reader = open('login_info.csv', 'w')
+        csv_reader.close()
     csv_reader = csv.reader(open('login_info.csv', 'r'))
     for i in csv_reader:
         if username_info ==i[0]:
@@ -184,7 +202,6 @@ def register_user():
     file.close()
     with open('login_info.csv', 'a') as file:
         file.write(f"{username_info},{enpass}\n")
-
     username_entry.delete(0, END)
     password_entry.delete(0, END)
 
@@ -196,6 +213,7 @@ def register_user():
 def login_verify():
     username1 = username_verify.get()
     password1 = password_verify.get()
+    flag = 1
     username_entry1.delete(0, END)
     password_entry1.delete(0, END)
     Pass = open("key.txt", "r")
@@ -215,8 +233,8 @@ def login_verify():
                         screen2.destroy()
                     else:
                         password_not_recognised()
-                if flag == 0:
-                    user_not_found()
+        if flag == 0:
+            user_not_found()
 
 
 def register():
