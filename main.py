@@ -41,6 +41,15 @@ def frontpage(username):
     #         Label(after_login_screen, text=f'{i["Phone"]}').grid(row=rw, column=2, padx=10, pady=10)
     #         Label(after_login_screen, text=f'{i["Email"]}').grid(row=rw, column=4, padx=10, pady=10)
 
+def delop(DisplayDetails,rw,i):
+    id=i
+    Label(DisplayDetails, text=f'{id["Name"]}').grid(row=rw, column=0, padx=10, pady=10)
+    Label(DisplayDetails, text=f'{id["Phone"]}').grid(row=rw, column=2, padx=10, pady=10)
+    Label(DisplayDetails, text=f'{id["Email"]}').grid(row=rw, column=4, padx=10, pady=10)
+    Button(DisplayDetails, text="Delete", command=lambda: Delete_contact(id, DisplayDetails)).grid(row=rw, column=5,
+                                                                                                  padx=10, pady=10)
+    Button(DisplayDetails, text="Update", command=lambda: Update_contact(id, DisplayDetails)).grid(row=rw, column=6,
+                                                                                                  padx=10, pady=10)
 def FoundItem(s,screen):
     dets=ob.Details(s)
     DisplayDetails=Toplevel(screen)
@@ -53,11 +62,7 @@ def FoundItem(s,screen):
         Label(DisplayDetails, text='Email').grid(row=rw, column=4, padx=10, pady=10)
         for i in dets:
             rw=rw+1
-            Label(DisplayDetails, text=f'{i["Name"]}').grid(row=rw, column=0, padx=10, pady=10)
-            Label(DisplayDetails, text=f'{i["Phone"]}').grid(row=rw, column=2, padx=10, pady=10)
-            Label(DisplayDetails, text=f'{i["Email"]}').grid(row=rw, column=4, padx=10, pady=10)
-            Button(DisplayDetails, text="Delete",command=lambda:Delete_contact(i,DisplayDetails)).grid(row=rw, column=5, padx=10, pady=10)
-            Button(DisplayDetails, text="Update",command=lambda:Update_contact(i,DisplayDetails)).grid(row=rw, column=6, padx=10, pady=10)
+            delop(DisplayDetails,rw,i)
     else:
         Label(DisplayDetails, text="NotFound").grid(row=0, column=0, padx=10, pady=10)
     Button(DisplayDetails, text="Back", width=10, height=1, command=lambda: delete5(DisplayDetails)).grid(row=(rw+1), column=6, padx=10, pady=10)
@@ -133,7 +138,7 @@ def Update_contact(dets,screen):
     lastname = StringVar()
     email = StringVar()
     phno = IntVar()
-    phno.set("")
+    phno.set(0)
 
     # Entries
     Entry(updateScreen, textvariable=firstname).grid(row=1, column=1, padx=10)

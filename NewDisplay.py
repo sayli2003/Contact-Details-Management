@@ -21,8 +21,6 @@ class Contact:
             with open(self.Data,"a") as file:
                 for i in self.contactList[1:]:
                     file.write(json.dumps(i)+"\n")
-        else:
-            file.write()
         file.close()
 
     def delete(self,dets):
