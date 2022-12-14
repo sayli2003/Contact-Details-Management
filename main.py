@@ -1,6 +1,6 @@
 import csv
-import time
 import os
+import time
 from tkinter import *
 import NewDisplay as nd
 from cryptography.fernet import Fernet
@@ -86,7 +86,7 @@ def add_contact(user):
     lastname = StringVar()
     email = StringVar()
     phno = IntVar()
-    phno.set('')
+    phno.set(None)
 
     # Entries
     Entry(addScreen, textvariable=firstname).grid(row=0, column=1, padx=10)
@@ -105,10 +105,9 @@ def add(firstname,lastname,PhoneNo,email,addScreen):
     enter["Phone"]=PhoneNo
     enter["Email"]=email
     ob.append(enter)
-    addScreen2 = Toplevel(screen)
-    Label(addScreen2, text="Contact Added Successfully").grid(row=0, column=0, padx=10,pady=10)
+
+    Label(addScreen, text="Contact Added Successfully").grid(row=5, column=1, padx=10,pady=10)
     time.sleep(1)
-    addScreen2.destroy()
     delete5(addScreen)
 
 
@@ -116,7 +115,7 @@ def Delete_contact(dets,screen):
     ob.delete(dets)
     DeleteScreen = Toplevel(screen)
     Label(DeleteScreen, text="Contact deleted Successfully").grid(row=0, column=0, padx=10,pady=10)
-    time.sleep(1)
+    time.sleep(1.5)
     DeleteScreen.destroy()
     delete5(screen)
 
@@ -159,10 +158,8 @@ def update(firstname,lastname,PhoneNo,email,dets,screen,screen2):
     enter["Phone"]=PhoneNo
     enter["Email"]=email
     ob.update(dets,enter)
-    UpadateScreen = Toplevel(screen)
-    Label(UpadateScreen, text="Contact Upadated Successfully").grid(row=0, column=0, padx=10, pady=10)
-    time.sleep(1)
-    UpadateScreen.destroy()
+    Label(screen, text="Contact Upadated Successfully").grid(row=0, column=0, padx=10, pady=10)
+    time.sleep(1.5)
     delete5(screen)
     delete5(screen2)
 
@@ -211,7 +208,7 @@ def register_user():
     password_entry.delete(0, END)
 
     Label(screen1, text="Registration Success", fg="green", font=("calibri", 11)).pack()
-    time.sleep(0.2)
+    time.sleep(1.5)
     screen1.destroy()
 
 
@@ -234,7 +231,6 @@ def login_verify():
                     passcheck = keyobj.decrypt(line[1].encode()).decode()
                     if passcheck == password1:
                         frontpage(username1)
-                        time.sleep(0.1)
                         screen2.destroy()
                     else:
                         password_not_recognised()
